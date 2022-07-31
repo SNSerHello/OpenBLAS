@@ -93,3 +93,6 @@ benchmark/smallscaling
 CMakeCache.txt
 CMakeFiles/*
 .vscode
+
+# 忽略发布目录
+dist*
