@@ -1,5 +1,53 @@
 # OpenBLAS
 
+## Windows下编译
+
+```bash
+mkdir build
+cd build
+cmake -G "Visual Studio 15 2017 Win64" ^
+	-DBUILD_SHARED_LIBS=ON ^
+	-DBUILD_TESTING=OFF ^
+	-DC_LAPACK=ON ^
+	-DCMAKE_INSTALL_PREFIX=../dist/openblas ..
+%comspec% /k "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+msbuild /maxcpucount:4 /p:Configuration=Release /p:PreferredToolArchitecture=x64 ALL_BUILD.vcxproj
+msbuild /maxcpucount:4 /p:Configuration=Release /p:PreferredToolArchitecture=x64 INSTALL.vcxproj
+```
+
+## Windows下发布目录结构
+
+```bash
+openblas
+├── bin
+│   └── openblas.dll
+├── include
+│   └── openblas
+│       ├── cblas.h
+│       ├── lapack.h
+│       ├── lapacke.h
+│       ├── lapacke_config.h
+│       ├── lapacke_example_aux.h
+│       ├── lapacke_mangling.h
+│       ├── lapacke_utils.h
+│       ├── openblas
+│       │   └── lapacke_mangling.h
+│       └── openblas_config.h
+├── lib
+│   ├── openblas.lib
+│   └── pkgconfig
+│       └── openblas.pc
+└── share
+    └── cmake
+        └── OpenBLAS
+            ├── OpenBLASConfig.cmake
+            ├── OpenBLASConfigVersion.cmake
+            ├── OpenBLASTargets-release.cmake
+            └── OpenBLASTargets.cmake
+```
+
+
+
 [![Join the chat at https://gitter.im/xianyi/OpenBLAS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xianyi/OpenBLAS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Travis CI: [![Build Status](https://travis-ci.com/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.com/xianyi/OpenBLAS)
