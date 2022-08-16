@@ -100,6 +100,7 @@ complex16: $(ZMATGEN) $(DZATGEN)
 	$(AR) $(ARFLAGS) $(TMGLIB) $^
 	$(RANLIB) $(TMGLIB)
 
+ifdef FRC
 $(SCATGEN): $(FRC)
 $(SMATGEN): $(FRC)
 $(CMATGEN): $(FRC)
@@ -109,6 +110,7 @@ $(ZMATGEN): $(FRC)
 
 FRC:
 	@FRC=$(FRC)
+endif
 
 .PHONY: clean cleanobj cleanlib
 clean: cleanobj cleanlib
@@ -117,9 +119,18 @@ cleanobj:
 cleanlib:
 	rm -f $(TMGLIB)
 
+ifneq ($(C_LAPACK), 1)
 ifeq ($(filter $(BUILD_SINGLE) $(BUILD_COMPLEX),1),)
 slaran.o: slaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 endif
 ifeq ($(filter $(BUILD_DOUBLE) $(BUILD_COMPLEX16),1),)
 dlaran.o: dlaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
+endif
+else
+ifeq ($(filter $(BUILD_SINGLE) $(BUILD_COMPLEX),1),)
+slaran.o: slaran.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
+endif
+ifeq ($(filter $(BUILD_DOUBLE) $(BUILD_COMPLEX16),1),)
+dlaran.o: dlaran.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
+endif
 endif
