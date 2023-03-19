@@ -126,7 +126,7 @@ endif
 	@echo "to circumvent any install errors."
 	@echo
 
-shared :
+shared : libs netlib $(RELA)
 ifneq ($(NO_SHARED), 1)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@$(MAKE) -C exports so
@@ -150,7 +150,7 @@ ifeq ($(OSNAME), CYGWIN_NT)
 endif
 endif
 
-tests :
+tests : libs netlib $(RELA) shared
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
@@ -278,7 +278,11 @@ prof_lapack : lapack_prebuild
 lapack_prebuild :
 ifeq ($(NO_LAPACK), $(filter 0,$(NO_LAPACK)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
+ifeq ($(F_COMPILER), GFORTRAN)
+	-@echo "override FFLAGS      = $(LAPACK_FFLAGS) -fno-tree-vectorize" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
