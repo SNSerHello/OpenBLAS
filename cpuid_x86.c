@@ -1547,6 +1547,8 @@ int get_cpuname(void){
       case 11: //family 6 exmodel 11
         switch (model) {
           case 7: // Raptor Lake
+          case 10:
+          case 15:
             if(support_avx2())
               return CPUTYPE_HASWELL;
 	    if(support_avx())
@@ -1934,7 +1936,8 @@ static char *corename[] = {
   "ZEN",
   "SKYLAKEX",
   "DHYANA",
-  "COOPERLAKE"
+  "COOPERLAKE",
+  "SAPPHIRERAPIDS",
 };
 
 static char *corename_lower[] = {
@@ -1968,7 +1971,8 @@ static char *corename_lower[] = {
   "zen",
   "skylakex",
   "dhyana",
-  "cooperlake"
+  "cooperlake",
+  "sapphirerapids",
 };
 
 
@@ -2274,16 +2278,18 @@ int get_coretype(void){
             return CORE_NEHALEM;
 	}
         if (model == 15) { // Sapphire Rapids
+	  if(support_amx_bf16())
+	    return CORE_SAPPHIRERAPIDS;
 	  if(support_avx512_bf16())
-            return CPUTYPE_COOPERLAKE;	
+            return CORE_COOPERLAKE;	
           if(support_avx512())
-            return CPUTYPE_SKYLAKEX;
+            return CORE_SKYLAKEX;
           if(support_avx2())
-            return CPUTYPE_HASWELL;
+            return CORE_HASWELL;
           if(support_avx())
-	    return CPUTYPE_SANDYBRIDGE;
+	    return CORE_SANDYBRIDGE;
 	  else
-	  return CPUTYPE_NEHALEM;	
+	  return CORE_NEHALEM;
         }
       break;
 
@@ -2348,6 +2354,8 @@ int get_coretype(void){
       case 11:
 	switch (model) {
 	  case 7: // Raptor Lake
+          case 10:
+          case 15:
 #ifndef NO_AVX2
 	  if(support_avx2())
             return CORE_HASWELL;
